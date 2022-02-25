@@ -142,6 +142,7 @@ func (pipe * VkPipe) Run(ctx context.Context) error {
 	err := pipe.send("?")
 	if err != nil { return err }
 	time.Sleep(1 * time.Second)
+	log.Trace("Start")
 	for {
 		select {
 			case <-ctx.Done():
