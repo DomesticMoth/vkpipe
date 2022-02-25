@@ -142,7 +142,7 @@ func (pipe * VkPipe) Run(ctx context.Context) error {
 	err := pipe.send("?")
 	if err != nil { return err }
 	time.Sleep(1 * time.Second)
-	log.Info("Start")
+	log.Trace("Start")
 	for {
 		select {
 			case <-ctx.Done():
@@ -171,6 +171,7 @@ func (pipe * VkPipe) Run(ctx context.Context) error {
 				msg := rawMsg[1:]
 				data, err := base64.StdEncoding.DecodeString(msg)
 				if err != nil { return err }
+				log.Trace("Give", data)
 				pipe.incChan <- data
 			case outerMsg := <- pipe.outChan:
 				str := base64.StdEncoding.EncodeToString(outerMsg)
