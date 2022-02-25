@@ -169,7 +169,7 @@ func (pipe * VkPipe) Run(ctx context.Context) error {
 					continue
 				}
 				if rawMsgWrap.Nom != pipe.nom {
-					log.Trace("Dropped", rawMsgWrapm, pipe.nom) 
+					log.Trace("Dropped", rawMsgWrap, pipe.nom) 
 					continue
 				}
 				rawStmp := string(rawMsg[0])
