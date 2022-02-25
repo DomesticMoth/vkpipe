@@ -184,6 +184,7 @@ func (pipe * VkPipe) Run(ctx context.Context) error {
 				if err != nil { return err }
 				log.Trace("Give", data)
 				pipe.incChan <- data
+				log.Trace("Gived", data)
 			case outerMsg := <- pipe.outChan:
 				str := base64.StdEncoding.EncodeToString(outerMsg)
 				str = pipe.intStampToText(sendstamp) + str
