@@ -92,7 +92,7 @@ func NewVkPipe(inc Bot, out []Bot, incChan, outChan chan []byte) (vk VkPipe, err
 
 	listener.MessageNew(func(_ context.Context, obj vkevents.MessageNewObject) {
 		if obj.Message.PeerID == inc.Peer {
-			log.Trace("Received", obj.Message.Text)
+			//log.Trace("Received", obj.Message.Text)
 			incRawRawChan <- Message{obj.Message.Text, 0}
 		}
 	})
