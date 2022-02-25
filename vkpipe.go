@@ -93,13 +93,17 @@ func NewVkPipe(inc Bot, out []Bot, incChan, outChan chan []byte) (vk VkPipe, err
 		if obj.Message.PeerID == inc.Peer {
 			log.Trace("Received", obj.Message.Text)
 			p := pipe
-			incRawChan <- Message{obj.Message.Text, p.nom}
+			incRawChan <- Message{obj.Message.Text, p.gnom()}
 		}
 	})
 
 	vk.listener = listener
 	log.Trace("Created")
 	return
+}
+
+func (pipe * VkPipe) gnom() uint64{
+	return pipe.nom
 }
 
 func (pipe * VkPipe) listen(){
