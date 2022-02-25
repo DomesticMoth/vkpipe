@@ -81,7 +81,7 @@ func NewVkPipe(inc Bot, out []Bot, incChan, outChan chan []byte) (vk VkPipe, err
 		incRawChan,
 		incRawRawChan,
 		0,
-		15,
+		3,
 		errChan,
 		stamps,
 		0,
@@ -146,6 +146,7 @@ func (pipe * VkPipe) nextStamp(stamp int) int {
 func (pipe * VkPipe) Run(ctx context.Context) error {
 	sendstamp := 0
 	recvstamp := 0
+	go pipe.nomer()
 	defer (*pipe.listener).Shutdown()
 	go pipe.listen()
 	err := pipe.send("?")
