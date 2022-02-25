@@ -161,15 +161,15 @@ func (pipe * VkPipe) Run(ctx context.Context) error {
 				return err
 			case rawMsgWrap := <- pipe.incRawChan:
 				log.Trace("Received", rawMsgWrap)
-				if rawMsgWrap.Nom != pipe.nom {
-					log.Trace("Dropped", rawMsgWrap)
-					continue
-				}
 				rawMsg := rawMsgWrap.Msg
 				if rawMsg == "" { continue }
 				if rawMsg == "?" {
 					recvstamp = 0
 					pipe.nom += 1
+					continue
+				}
+				if rawMsgWrap.Nom != pipe.nom {
+					log.Trace("Dropped", rawMsgWrapm, pipe.nom) 
 					continue
 				}
 				rawStmp := string(rawMsg[0])
