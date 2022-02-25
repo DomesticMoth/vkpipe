@@ -161,6 +161,7 @@ func (pipe * VkPipe) Run(ctx context.Context) error {
 				if rawMsg == "?" {
 					recvstamp = 0
 					pipe.nom += 1
+					continue
 				}
 				rawStmp := string(rawMsg[0])
 				stmp := pipe.textStampToInt(rawStmp)
