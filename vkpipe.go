@@ -98,6 +98,7 @@ func NewVkPipe(inc Bot, out []Bot, incChan, outChan chan []byte) (vk VkPipe, err
 	})
 
 	vk.listener = listener
+	log.Trace("Created")
 	return
 }
 
