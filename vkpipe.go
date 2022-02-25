@@ -41,6 +41,7 @@ type VkPipe struct{
 	incChan chan []byte
 	outChan chan []byte
 	incRawChan chan Message
+	incRawRawChan chan Message
 	incLim int
 	outLim int
 	errChan chan error
@@ -58,6 +59,7 @@ func NewVkPipe(inc Bot, out []Bot, incChan, outChan chan []byte) (vk VkPipe, err
 					   "k", "l", "m", "n", "o", "p", "q", "r", "s", "t",
 					   "u", "v", "w", "x", "y", "z", "+", "-", "<", ">"}
 	incRawChan := make(chan Message, len(stamps))
+	incRawRawChan := make(chan Message)
 	
 	incvk := api.NewVK(inc.Token)
 	group, err := incvk.GroupsGetByID(nil)
@@ -77,6 +79,7 @@ func NewVkPipe(inc Bot, out []Bot, incChan, outChan chan []byte) (vk VkPipe, err
 		incChan,
 		outChan,
 		incRawChan,
+		incRawRawChan,
 		0,
 		15,
 		errChan,
@@ -87,13 +90,10 @@ func NewVkPipe(inc Bot, out []Bot, incChan, outChan chan []byte) (vk VkPipe, err
 		0,
 	}
 
-	pipe := &vk
-
 	listener.MessageNew(func(_ context.Context, obj vkevents.MessageNewObject) {
 		if obj.Message.PeerID == inc.Peer {
 			log.Trace("Received", obj.Message.Text)
-			p := pipe
-			incRawChan <- Message{obj.Message.Text, p.gnom()}
+			incRawRawChan <- Message{obj.Message.Text, 0}
 		}
 	})
 
@@ -102,8 +102,12 @@ func NewVkPipe(inc Bot, out []Bot, incChan, outChan chan []byte) (vk VkPipe, err
 	return
 }
 
-func (pipe * VkPipe) gnom() uint64{
-	return pipe.nom
+func (pipe * VkPipe) nomer(){
+	for{
+		msg := <- pipe.incRawRawChan
+		msg.Nom = pipe.nom
+		pipe.incRawChan <- msg
+	}
 }
 
 func (pipe * VkPipe) listen(){
