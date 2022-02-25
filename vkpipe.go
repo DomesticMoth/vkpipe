@@ -17,6 +17,7 @@ import (
 	"github.com/SevereCloud/vksdk/v2/longpoll-bot"
 	vkevents "github.com/SevereCloud/vksdk/v2/events"
 	"github.com/SevereCloud/vksdk/v2/api/params"
+	log "github.com/sirupsen/logrus"
 )
 
 type Bot struct{
@@ -90,6 +91,7 @@ func NewVkPipe(inc Bot, out []Bot, incChan, outChan chan []byte) (vk VkPipe, err
 
 	listener.MessageNew(func(_ context.Context, obj vkevents.MessageNewObject) {
 		if obj.Message.PeerID == inc.Peer {
+			log.Trace("Received", obj.Message.Text)
 			p := pipe
 			incRawChan <- Message{obj.Message.Text, p.nom}
 		}
@@ -147,7 +149,11 @@ func (pipe * VkPipe) Run(ctx context.Context) error {
 			case err := <- pipe.errChan:
 				return err
 			case rawMsgWrap := <- pipe.incRawChan:
-				if rawMsgWrap.Nom != pipe.nom { continue }
+				log.Trace("Received", rawMsgWrap)
+				if rawMsgWrap.Nom != pipe.nom {
+					log.Trace("Dropped", rawMsgWrap)
+					continue
+				}
 				rawMsg := rawMsgWrap.Msg
 				if rawMsg == "" { continue }
 				if rawMsg == "?" {
