@@ -50,7 +50,7 @@ type VkPipe struct{
 	nom uint64
 	sendersChan chan *Sender
 	sends int
-	bname string
+	Bname string
 }
 
 func NewVkPipe(inc Bot, out []Bot, incChan, outChan chan []byte) (vk VkPipe, err error){
@@ -154,7 +154,7 @@ func (pipe * VkPipe) Run(ctx context.Context) error {
 	err := pipe.send("?")
 	if err != nil { return err }
 	time.Sleep(1 * time.Second)
-	log.Trace(pipe.bname, "Start")
+	log.Trace(pipe.Bname, "Start")
 	for {
 		select {
 			case <-ctx.Done():
@@ -162,7 +162,7 @@ func (pipe * VkPipe) Run(ctx context.Context) error {
 			case err := <- pipe.errChan:
 				return err
 			case rawMsgWrap := <- pipe.incRawChan:
-				log.Trace(pipe.bname, "Received", rawMsgWrap)
+				log.Trace(pipe.bBame, "Received", rawMsgWrap)
 				rawMsg := rawMsgWrap.Msg
 				if rawMsg == "" { continue }
 				if rawMsg == "?" {
@@ -171,7 +171,7 @@ func (pipe * VkPipe) Run(ctx context.Context) error {
 					continue
 				}
 				if rawMsgWrap.Nom != pipe.nom {
-					log.Trace(pipe.bname, "Dropped", rawMsgWrap, pipe.nom) 
+					log.Trace(pipe.bBame, "Dropped", rawMsgWrap, pipe.nom) 
 					continue
 				}
 				rawStmp := string(rawMsg[0])
@@ -184,9 +184,9 @@ func (pipe * VkPipe) Run(ctx context.Context) error {
 				msg := rawMsg[1:]
 				data, err := base64.StdEncoding.DecodeString(msg)
 				if err != nil { return err }
-				log.Trace(pipe.bname, "Give", data)
+				log.Trace(pipe.Bname, "Give", data)
 				pipe.incChan <- data
-				log.Trace(pipe.bname, "Gived", data)
+				log.Trace(pipe.Bname, "Gived", data)
 			case outerMsg := <- pipe.outChan:
 				str := base64.StdEncoding.EncodeToString(outerMsg)
 				str = pipe.intStampToText(sendstamp) + str
