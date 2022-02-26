@@ -53,7 +53,7 @@ type VkPipe struct{
 	Bname string
 }
 
-func NewVkPipe(inc Bot, out []Bot, incChan, outChan chan []byte) (vk VkPipe, err error){
+func NewVkPipe(inc Bot, out []Bot, incChan, outChan chan []byte, outLim int) (vk VkPipe, err error){
 	errChan := make(chan error)
 	stamps := []string{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", 
 					   "a", "b", "c", "d", "e", "f", "g", "h", "i", "j",
@@ -82,7 +82,7 @@ func NewVkPipe(inc Bot, out []Bot, incChan, outChan chan []byte) (vk VkPipe, err
 		incRawChan,
 		incRawRawChan,
 		0,
-		3,
+		outLim,
 		errChan,
 		stamps,
 		0,
