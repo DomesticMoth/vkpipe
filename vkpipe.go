@@ -120,10 +120,7 @@ func (pipe * VkPipe) listen(){
 }
 
 func (pipe * VkPipe) send(msg string) error {
-	if pipe.sends >= pipe.outLim {
-		pipe.sends = 0
-		time.Sleep(1 * time.Second)
-	}
+	time.Sleep(time.Second / time.Duration(pipe.outLim))
 	pipe.sends += 1
 	sender := <- pipe.sendersChan
 	pipe.sendersChan <- sender
